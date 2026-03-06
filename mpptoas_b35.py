@@ -1143,10 +1143,10 @@ class GetTOAs(object):
                 toa_flags['bandno'] = bnda + '_&_' + bndb
 
                 if (ar_mjd > 58230.):
-                    toa_flags['cycle_post34'] = ''
+                    toa_flags['cycle'] = 'post34'
                     # ext_flag = '-cycle_post34'
                 if (ar_mjd < 58230.):
-                    toa_flags['cycle_pre34'] = ''
+                    toa_flags['cycle'] = 'pre34'
                     # ext_flag = '-cycle_pre34'
                 # print(ok)
                 #################################################################
