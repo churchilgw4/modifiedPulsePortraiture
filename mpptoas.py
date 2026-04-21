@@ -1728,7 +1728,7 @@ if __name__ == "__main__":
                 print_phase=print_phase, print_flux=print_flux,
                 print_parangle=print_parangle,
                 addtnl_toa_flags=addtnl_toa_flags, method='trust-ncg',
-                bounds=None, show_plot=False, quiet=quiet, outdir=outdir)
+                bounds=None, show_plot=False, quiet=quiet)
     else:  # get narrowband TOAs with psrchive
         gt.get_psrchive_TOAs(datafile=None, tscrunch=False, algorithm='PGS',
                 toa_format='Tempo2', flags='IPTA',
