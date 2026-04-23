@@ -32,7 +32,7 @@ from past.utils import old_div
 from types import SimpleNamespace
 
 from mpplib_b35 import *
-import os
+
 
 # cfitsio defines a maximum number of files (NMAXFILES) that can be opened in
 # the header file fitsio2.h.  Without calling unload() with PSRCHIVE, which
@@ -2419,8 +2419,6 @@ if __name__ == "__main__":
     pool = options.pool
     quiet = options.quiet
     outdir = options.outdir
-    try: os.system(f'mkdir -p {outdir}')
-    except OSError: pass
     
     if not mlan:
         from mpptoaslib_b35 import *

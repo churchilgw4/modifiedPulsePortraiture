@@ -25,7 +25,7 @@ from past.utils import old_div
 from types import SimpleNamespace
 
 from mpplib import *
-
+import os
 
 # cfitsio defines a maximum number of files (NMAXFILES) that can be opened in
 # the header file fitsio2.h.  Without calling unload() with PSRCHIVE, which
@@ -166,7 +166,7 @@ class GetTOAs(object):
                  print_phase=True, print_flux=False, print_parangle=False,
                  add_instrumental_response=False, addtnl_toa_flags={},
                  method='trust-ncg', bounds=None, nu_fits=None, show_plot=False,
-                 bayes=False, quiet=None):
+                 bayes=False, quiet=None, outdir=None):
         """
         Measure TOAs from wideband data accounting for numerous ISM effects.
 
@@ -517,12 +517,12 @@ class GetTOAs(object):
                     results = fit_portrait_full(portx, modelx, param_guesses, P,
                                                 freqsx, nu_fits[isub], nu_refs[isub], errs, fit_flags,
                                                 bounds, self.log10_tau, option=0, sub_id=sub_id,
-                                                method=method, is_toa=True, bayes=bayes, quiet=quiet, filename=filename, pool = pool)
+                                                method=method, is_toa=True, bayes=bayes, quiet=quiet, filename=filename, pool = pool, outdir=outdir)
                 if mlan:
                     results = fit_portrait_full_mlan(portx, modelx, param_guesses, P,
                                                 freqsx, nu_fits[isub], nu_refs[isub], errs, fit_flags,
                                                 bounds, self.log10_tau, option=0, sub_id=sub_id,
-                                                method=method, is_toa=True, bayes=bayes, quiet=quiet, filename=filename, pool = pool)
+                                                method=method, is_toa=True, bayes=bayes, quiet=quiet, filename=filename, pool = pool, outdir=outdir)
                 # Old code
                 # results = fit_portrait(portx, modelx,
                 #        np.array([phi_guess, DM_guess]), P, freqsx,
@@ -832,7 +832,7 @@ class GetTOAs(object):
                 tot_duration += stop - start
                 for isub in d.ok_isubs:
                     if show_plot=="save":
-                        savefig = datafile + '.%d.pptoas.png' % isub
+                        savefig = outdir + '/' + os.path.basename(datafile) + '.%d.pptoas.png' % isub
                         # show_display = False  # Don't display when saving
                     else:
                         savefig = False
@@ -1632,6 +1632,9 @@ if __name__ == "__main__":
     parser.add_option("--saveplot",
                       action="store_true", dest="save_plot", default=False,
                       help="Save plots of fitted data/model/residuals for each subint.")
+    parser.add_option("--outdir",
+                      action="store", dest="outdir", default='./',
+                      help="Output directory to store the Bayesian results.")
     parser.add_option("--bayes",
                       action="store_true", dest="bayes", default=False,
                       help="If True, will use bayesian method to estimate ToA and DM")
@@ -1703,7 +1706,10 @@ if __name__ == "__main__":
     mlan = options.mlan
     pool = options.pool
     quiet = options.quiet
-
+    outdir = options.outdir
+    try: os.system(f'mkdir -p {outdir}')
+    except OSError: pass
+    
     if not mlan:
         from mpptoaslib import *
     if mlan:
@@ -1717,7 +1723,7 @@ if __name__ == "__main__":
                 fix_alpha=fix_alpha, print_phase=print_phase,
                 print_flux=print_flux, print_parangle=print_parangle,
                 addtnl_toa_flags=addtnl_toa_flags, method='trust-ncg',
-                bounds=None, nu_fits=None, show_plot=show_plot, bayes=bayes, quiet=quiet)
+                bounds=None, nu_fits=None, show_plot=show_plot, bayes=bayes, quiet=quiet, outdir=outdir)
     elif not psrchive:  # get narrowband TOAs using in-house code
         gt.get_narrowband_TOAs(datafile=None, tscrunch=tscrunch,
                 fit_scat=fit_scat, log10_tau=log10_tau, scat_guess=scat_guess,

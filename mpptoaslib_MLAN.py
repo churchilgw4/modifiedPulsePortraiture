@@ -11,7 +11,7 @@ from mpplib import *
 from scipy.special import erf
 #import nautilus
 #import corner
-
+import os
 
 
 #############
@@ -1248,7 +1248,7 @@ def fit_portrait_full_mlan(data_port, model_port, init_params, P, freqs,
                       nu_fits=[None, None, None], nu_outs=[None, None, None], errs=None,
                       fit_flags=[1, 1, 1, 1, 1], bounds=[(None, None), (None, None),
                                                          (None, None), (None, None), (None, None)], log10_tau=True,
-                      option=0, sub_id=None, method='trust-ncg', is_toa=True, bayes=False, quiet=True, filename = None, pool = 10):
+                      option=0, sub_id=None, method='trust-ncg', is_toa=True, bayes=False, quiet=True, filename = None, pool = 10, outdir=None):
     """
     Fit a phase offset, DM, GM, tau, & alpha between data and model portraits.
 
@@ -1525,7 +1525,8 @@ def fit_portrait_full_mlan(data_port, model_port, init_params, P, freqs,
                     range=np.ones(ndim) * 0.999, fig=fig)
         corner.overplot_lines(figure, fit_values - fit_value_errs, color="C1")
         corner.overplot_lines(figure, fit_values + fit_value_errs, color="C1")
-        output_file = filename+".png"
+        newfilename = os.path.basename(filename)
+        output_file = outdir+'/'+newfilename+".png"
         figure.savefig(output_file, dpi=300, bbox_inches="tight")
         plt.close(figure)
 
@@ -1550,7 +1551,7 @@ def fit_portrait_full_mlan(data_port, model_port, init_params, P, freqs,
         gt = gaussian_test(points, log_w)    
             # print(f"{param_name}: {q_50:.6f} +{q_84 - q_50:.6f} -{q_50 - q_16:.6f}")
 
-        peakfile = open(filename+'.pkl', 'ab')
+        peakfile = open(outdir+'/'+newfilename+'.pkl', 'ab')
         pickle.dump([param_stats, nu_fit_DM, 'log Z: {:.4f}'.format(sampler.log_z),prior_keys,sampler.posterior()],peakfile)
         peakfile.close()
         phi_final = param_stats["phi"]["median"]
