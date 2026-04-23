@@ -1307,8 +1307,8 @@ class GetTOAs(object):
                 tot_duration += stop - start
                 for isub in d3.ok_isubs:
                     if show_plot=="save":
-                        savefig_band3 = datafile_band3 + '.%d3.pptoas.png' % isub
-                        savefig_band5 = datafile_band5 + '.%d5.pptoas.png' % isub
+                        savefig_band3 = outdir + '/' + os.path.basename(datafile_band3) + '.%d3.pptoas.png' % isub
+                        savefig_band5 = outdir + '/' + os.path.basename(datafile_band5) + '.%d5.pptoas.png' % isub
                     else:
                         savefig_band3 = False
                         savefig_band5 = False
